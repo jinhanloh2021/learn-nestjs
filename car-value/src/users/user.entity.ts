@@ -6,7 +6,7 @@ export class User {
   id: number;
 
   @Column()
-  email: string;
+  email: string; //varchar
 
   @Column()
   password: string;
