@@ -22,7 +22,7 @@ export class UsersController {
   }
 
   @Get('/:id')
-  findUser(@Param('id') id: string /* Id retrieved as string */) {
+  findUser(@Param('id') id: string) {
     return this.userService.findOne(parseInt(id));
   }
 
