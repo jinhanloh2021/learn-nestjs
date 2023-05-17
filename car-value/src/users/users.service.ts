@@ -17,4 +17,42 @@ export class UsersService {
     // Try not to do this, hooks won't run. save(), remove(), hooks run. insert(), update(), delete() hooks won't run.
     // return this.repo.save({email, password});
   }
+
+  async findOne(id: number) {
+    return this.repo.findOneBy({ id });
+  }
+
+  find(email: string) {
+    return this.repo.find({ where: { email } });
+  }
+
+  // Use Utility Type Partial. Attrs can be a subset of User.
+  // Only use async if you want to await something. Not necessary as Nest handles this.
+  async update(id: number, attrs: Partial<User>) {
+    // 1. User must exist
+    const user = await this.findOne(id);
+    if (!user) {
+      throw 'User not found';
+    }
+
+    // 2. Update User
+    Object.assign(user, attrs); // Overwrites attrs onto user
+
+    // Another way to overwrite common attributes
+    // const updatedUser = {
+    //   ...user,
+    //   ...attrs,
+    // };
+
+    // 3. Save updated user
+    return this.repo.save(user);
+  }
+
+  async remove(id: number) {
+    const user = await this.findOne(id);
+    if (!user) {
+      throw 'User not found';
+    }
+    return this.repo.remove(user);
+  }
 }
