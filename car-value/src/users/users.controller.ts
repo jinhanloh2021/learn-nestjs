@@ -36,4 +36,9 @@ export class UsersController {
   removeUser(@Param('id') id: string) {
     return this.userService.remove(parseInt(id));
   }
+
+  @Patch('/:id')
+  updateUser(@Param('id') id: string, @Body() body: Partial<CreateUserDto>) {
+    return this.userService.update(parseInt(id), body);
+  }
 }
