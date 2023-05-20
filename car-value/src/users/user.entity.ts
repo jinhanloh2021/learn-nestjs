@@ -6,6 +6,7 @@ import {
   AfterUpdate,
   AfterRemove,
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User {
@@ -16,6 +17,7 @@ export class User {
   email: string; //varchar
 
   @Column()
+  @Exclude()
   password: string;
 
   // TypeORM hooks, similar to triggers. Run only whe entities are saved.
