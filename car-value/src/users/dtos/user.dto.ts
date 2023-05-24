@@ -7,4 +7,6 @@ export class UserDto {
 
   @Expose()
   email: string;
+
+  // Password not included here. We don't want to expose password.
 }

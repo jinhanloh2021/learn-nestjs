@@ -13,6 +13,7 @@ import {
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UsersService } from './users.service';
 import { SerializeInterceptor } from 'src/interceptors/serialize.interceptor';
+import { UserDto } from './dtos/user.dto';
 
 @Controller('auth')
 export class UsersController {
@@ -23,10 +24,9 @@ export class UsersController {
     this.userService.create(body.email, body.password);
   }
 
-  @UseInterceptors(SerializeInterceptor) // Custom interceptor added here
+  @UseInterceptors(new SerializeInterceptor(UserDto)) // Custom interceptor added here
   @Get('/:id')
   findUser(@Param('id') id: string) {
-    console.log('Handler is running.\n');
     return this.userService.findOne(parseInt(id));
   }
 
