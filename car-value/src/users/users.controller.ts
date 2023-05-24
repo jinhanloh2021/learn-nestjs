@@ -8,11 +8,10 @@ import {
   Param,
   Query,
   HttpCode,
-  UseInterceptors,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UsersService } from './users.service';
-import { SerializeInterceptor } from 'src/interceptors/serialize.interceptor';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { UserDto } from './dtos/user.dto';
 
 @Controller('auth')
@@ -24,7 +23,8 @@ export class UsersController {
     this.userService.create(body.email, body.password);
   }
 
-  @UseInterceptors(new SerializeInterceptor(UserDto)) // Custom interceptor added here
+  // @UseInterceptors(new SerializeInterceptor(UserDto)) // Custom interceptor added here
+  @Serialize(UserDto) // Custom decorator
   @Get('/:id')
   findUser(@Param('id') id: string) {
     return this.userService.findOne(parseInt(id));
