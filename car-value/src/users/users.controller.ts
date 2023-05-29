@@ -35,9 +35,14 @@ export class UsersController {
   async signin(@Body() body: CreateUserDto, @Session() session: any) {
     const user = await this.authService.signIn(body.email, body.password);
     session.userId = user.id;
+    console.log('Session: ' + session);
     return user;
   }
 
+  @Get('/whoami')
+  whoAmI(@Session() session: any) {
+    return this.userService.findOne(session.userId);
+  }
   // @UseInterceptors(new SerializeInterceptor(UserDto)) // Custom interceptor added here
   // @Serialize(UserDto) // Custom decorator
   @Get('/:id')
