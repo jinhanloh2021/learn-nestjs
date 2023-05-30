@@ -9,7 +9,6 @@ import {
   Query,
   HttpCode,
   Session,
-  UseInterceptors,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UsersService } from './users.service';
@@ -18,11 +17,9 @@ import { UserDto } from './dtos/user.dto';
 import { AuthService } from './auth.service';
 import { User } from './user.entity';
 import { CurrentUser } from './decorators/current-user.decorator';
-import { CurrentUserInterceptor } from './interceptors/current-user.interceptor';
 
 @Serialize(UserDto) // Controller wide serialisation
 @Controller('auth')
-@UseInterceptors(CurrentUserInterceptor) // Controller wide interceptor
 export class UsersController {
   constructor(
     private userService: UsersService,
