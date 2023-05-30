@@ -39,6 +39,11 @@ export class UsersController {
     return user;
   }
 
+  @Post('/signout')
+  async signout(@Session() session: any) {
+    session.userId = null;
+  }
+
   @Get('/whoami')
   whoAmI(@Session() session: any) {
     return this.userService.findOne(session.userId);
