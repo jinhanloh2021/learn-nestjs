@@ -10,10 +10,17 @@ describe('Auth Service', () => {
     mockUsersService: Partial<UsersService>;
   beforeEach(async () => {
     // Create mock of userService
+    const users: User[] = [];
     mockUsersService = {
-      find: () => Promise.resolve([]),
-      create: (email: string, password: string) =>
-        Promise.resolve({ id: 1, email, password } as User),
+      find: (email: string) => {
+        const filteredUsers = users.filter((user) => user.email === email);
+        return Promise.resolve(filteredUsers);
+      },
+      create: (email: string, password: string) => {
+        const user = { id: users.length, email, password } as User;
+        users.push(user);
+        return Promise.resolve(user);
+      },
     };
 
     module = await Test.createTestingModule({
@@ -42,8 +49,7 @@ describe('Auth Service', () => {
       expect(hash).toBeDefined();
     });
     it('Throws an error if user signs up with existing email', async () => {
-      mockUsersService.find = () =>
-        Promise.resolve([{ id: 1, email: 'a', password: '1' } as User]);
+      await service.signUp('test@test.com', 'test');
       await expect(service.signUp('test@test.com', 'test')).rejects.toThrow(
         BadRequestException,
       );
@@ -52,26 +58,21 @@ describe('Auth Service', () => {
 
   describe('signIn', () => {
     it('Throws if signIn called with non-existent email', async () => {
+      await service.signUp('test@test.com', 'password');
       await expect(
         service.signIn('non_existent_email@test.com', 'test'),
       ).rejects.toThrowError(new UnauthorizedException('Invalid email'));
     });
     it('Throws if user signs in with wrong password', async () => {
-      mockUsersService.find = () =>
-        Promise.resolve([
-          { id: 1, email: 'test@test.com', password: 'salt.hash' } as User,
-        ]);
+      await service.signUp('pwTest@test.com', 'password');
       await expect(
-        service.signIn('test@test.com', 'wrong_password'),
+        service.signIn('pwTest@test.com', 'wrong_password'),
       ).rejects.toThrowError(new UnauthorizedException('Invalid password'));
     });
     it('Returns found user if valid email and password', async () => {
-      // mockUsersService.find = () =>
-      //   Promise.resolve([
-      //     { id: 1, email: 'test@test.com', password: 'salt.hash' } as User,
-      //   ]);
-      // const user = await service.signIn('test@test.com', 'salt.hash');
-      // expect(user).toBeDefined();
+      await service.signUp('test@test.com', 'password');
+      const user = await service.signIn('test@test.com', 'password');
+      expect(user).toBeDefined();
     });
   });
 });
