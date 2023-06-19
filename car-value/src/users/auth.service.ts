@@ -39,14 +39,14 @@ export class AuthService {
   async signIn(email: string, password: string) {
     const [user] = await this.usersService.find(email);
     if (!user) {
-      throw new UnauthorizedException('Invalid login credentials');
+      throw new UnauthorizedException('Invalid email');
     }
 
     const [salt, hash] = user.password.split('.');
     const digest: Buffer = await scrypt(password, salt, 32);
 
     if (hash !== digest.toString('hex')) {
-      throw new UnauthorizedException('Invalid login credentials');
+      throw new UnauthorizedException('Invalid password');
     }
     return user;
   }
